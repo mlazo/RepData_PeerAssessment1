@@ -1,5 +1,6 @@
 # Reproducible Research: Peer Assessment 1
 ========================================
+#NOTE: To run this code you will need to install Hmisc. Make sure to do this before running the code or you will get an error message.
 
 Set your working directory.
 Then create a subdirectory called data
@@ -75,14 +76,11 @@ be used for calculating the average for each five minute interval across all day
 
 ```r
 
-w <- sprintf("%04i", activity$interval)
-z <- strptime(w, "%H%M")
-timeonly <- format(z, format = "%H:%M:%S")
-## activity$intervalFactor <- factor(timeonly)
 activity$intervalFactor <- factor(activity$interval)
 avg_per_interval <- aggregate(steps ~ intervalFactor, activity, mean, rm.na = T)
 
 colnames(avg_per_interval) <- c("interval", "steps")
+avg_per_interval$steps <- round(avg_per_interval$steps, 0)
 plot(avg_per_interval, main = "Average Daily Activity Pattern", xlab = "5 Minute Intervals", 
     ylab = "Avg steps taken per 5 minute interval")
 lines(avg_per_interval$interval, avg_per_interval$steps, type = "l")
@@ -92,34 +90,48 @@ lines(avg_per_interval$interval, avg_per_interval$steps, type = "l")
 
 ```r
 most <- avg_per_interval$interval[which.max(avg_per_interval$steps)]
+moststeps <- avg_per_interval[most, ]$steps
 ```
 
 The interval during the time 835 had the most steps per interval
-
+It had 206 steps
 ## Imputing missing values
 Calculate the number of missing values in the data set
-Use the average number of steps per interval to fill in the missing steps values
+I randomly filled in the missing values using values from the mean number of steps per interval
+
+```r
+
+library(Hmisc)
+```
+
+```
+## Loading required package: grid
+## Loading required package: lattice
+## Loading required package: survival
+## Loading required package: splines
+## Loading required package: Formula
+## 
+## Attaching package: 'Hmisc'
+## 
+## The following objects are masked from 'package:base':
+## 
+##     format.pval, round.POSIXt, trunc.POSIXt, units
+```
 
 ```r
 t <- table(is.na(activity$steps))
 numMissing <- t[2]
-cleaning <- activity
 orig <- activity$steps
-stepsMeans <- avg_per_interval$steps
-if (is.na(cleaning$steps)) {
-    steps <- subset(avg_per_interval, interval = cleaning$interval)$steps
-} else {
-    steps <- cleandata$steps
-}
+steps_no_nas <- impute(orig, "random")
+
+clean <- data.frame(steps_no_nas, activity$Dates, activity$intervalFactor, activity$WkdayOrWkend)
 ```
 
 ```
-## Warning: the condition has length > 1 and only the first element will be
-## used
+## Error: arguments imply differing number of rows: 17568, 0
 ```
 
 ```r
-cleandata <- c(cleaning, steps)
 
 ```
 

@@ -65,6 +65,7 @@ activity$intervalFactor<-factor(activity$interval)
 avg_per_interval <- aggregate(steps ~ intervalFactor, activity, mean, rm.na=T)
 
 colnames(avg_per_interval) <- c("interval", "steps")
+avg_per_interval$steps <- integer(avg_per_interval$steps)
 plot(avg_per_interval, main = "Average Daily Activity Pattern", xlab = "5 Minute Intervals",
      ylab = "Avg steps taken per 5 minute interval")
 lines(avg_per_interval$interval,avg_per_interval$steps, type="l")
@@ -75,13 +76,25 @@ The interval during the time `r format(most, scientific=F)` had the most steps p
 ## Imputing missing values
 Calculate the number of missing values in the data set
 Use the average number of steps per interval to fill in the missing steps values
+You need to install the Hmisc package for this method of imputation
 ```{r, echo=TRUE}
+install.packages("Hmisc")
+library(Hmisc)
 t <- table(is.na(activity$steps))
 numMissing <- t[2]
 cleaning <- activity
 orig <- activity$steps
-stepsMeans <- avg_per_interval$steps
-if (is.na(cleaning$steps)){
+stepsMeans <-iavg_per_interval$steps
+for(i in )
+nas_steps <- which(is.na(orig))
+defaults <- steps_per_interval
+    na_replacements <- unlist(lapply(na_indices, FUN=function(idx){
+        interval = tbl[idx,]$interval
+        defaults[defaults$interval == interval,]$steps
+        }))
+    imp_steps <- tbl$steps
+    imp_steps[na_indices] <- na_replacements
+if (is.na(orig)){
   steps <- subset(avg_per_interval, interval=cleaning$interval)$steps
 }else{
     steps <-cleandata$steps

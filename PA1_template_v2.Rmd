@@ -1,5 +1,6 @@
 # Reproducible Research: Peer Assessment 1
 ========================================
+#NOTE: To run this code you will need to install Hmisc. Make sure to do this before running the code or you will get an error message.
 
 Set your working directory.
 Then create a subdirectory called data
@@ -57,36 +58,31 @@ The code below will create a new column from the interval data. The column class
 be used for calculating the average for each five minute interval across all days
 ```{r, echo=TRUE}
 
-w <- sprintf("%04i",activity$interval)
-z <- strptime(w, "%H%M")
-timeonly <- format(z, format="%H:%M:%S")
-##activity$intervalFactor <- factor(timeonly)
 activity$intervalFactor<-factor(activity$interval)
 avg_per_interval <- aggregate(steps ~ intervalFactor, activity, mean, rm.na=T)
 
 colnames(avg_per_interval) <- c("interval", "steps")
+avg_per_interval$steps <- round(avg_per_interval$steps,0)
 plot(avg_per_interval, main = "Average Daily Activity Pattern", xlab = "5 Minute Intervals",
      ylab = "Avg steps taken per 5 minute interval")
 lines(avg_per_interval$interval,avg_per_interval$steps, type="l")
 most <- avg_per_interval$interval[which.max(avg_per_interval$steps)]
+moststeps <- avg_per_interval[most,]$steps
 ```
 The interval during the time `r format(most, scientific=F)` had the most steps per interval
-
+It had `r moststeps` steps
 ## Imputing missing values
 Calculate the number of missing values in the data set
-Use the average number of steps per interval to fill in the missing steps values
+I randomly filled in the missing values using values from the mean number of steps per interval
 ```{r, echo=TRUE}
+
+library(Hmisc)
 t <- table(is.na(activity$steps))
 numMissing <- t[2]
-cleaning <- activity
 orig <- activity$steps
-stepsMeans <- avg_per_interval$steps
-if (is.na(cleaning$steps)){
-  steps <- subset(avg_per_interval, interval=cleaning$interval)$steps
-}else{
-    steps <-cleandata$steps
-}
-cleandata <- c(cleaning, steps)
+steps_no_nas <- impute(orig, 'random')
+
+clean <- data.frame(steps_no_nas, activity$Dates, activity$intervalFactor, activity$WkdayOrWkend)
 
 
 ```
