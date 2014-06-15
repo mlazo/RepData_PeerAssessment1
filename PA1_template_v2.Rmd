@@ -75,17 +75,24 @@ It had `r moststeps` steps
 Calculate the number of missing values in the data set
 I randomly filled in the missing values using values from the mean number of steps per interval
 ```{r, echo=TRUE}
+orig <- avg_per_interval$steps
+orig <- impute(orig, 'random')
 
-library(Hmisc)
-t <- table(is.na(activity$steps))
-numMissing <- t[2]
-orig <- activity$steps
-steps_no_nas <- impute(orig, 'random')
-
-clean <- data.frame(steps_no_nas, activity$Dates, activity$intervalFactor, activity$WkdayOrWkend)
-
-
+  
 ```
 There are `r format(numMissing, scientific = F)` rows with NA's in the data
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+Yes
+Calculate weekday and weekend data
+```{r, echo=TRUE}
+library(ggplot)
+ggplot(activity,
+        aes(x=interval, y=steps)) +
+        geom_line(color="red", size=1) +
+        facet_wrap(~ WkdayOrWkend, nrow=2, ncol=1) +
+        labs(x="Interval", y="Number of steps") +
+        theme_bw()
+)
+```)

@@ -100,41 +100,27 @@ Calculate the number of missing values in the data set
 I randomly filled in the missing values using values from the mean number of steps per interval
 
 ```r
-
-library(Hmisc)
+orig <- avg_per_interval$steps
+orig <- impute(orig, "random")
 ```
 
 ```
-## Loading required package: grid
-## Loading required package: lattice
-## Loading required package: survival
-## Loading required package: splines
-## Loading required package: Formula
-## 
-## Attaching package: 'Hmisc'
-## 
-## The following objects are masked from 'package:base':
-## 
-##     format.pval, round.POSIXt, trunc.POSIXt, units
+## Error: could not find function "impute"
 ```
 
-```r
-t <- table(is.na(activity$steps))
-numMissing <- t[2]
-orig <- activity$steps
-steps_no_nas <- impute(orig, "random")
-
-clean <- data.frame(steps_no_nas, activity$Dates, activity$intervalFactor, activity$WkdayOrWkend)
-```
-
-```
-## Error: arguments imply differing number of rows: 17568, 0
-```
-
-```r
+There are 
 
 ```
 
-There are 2304 rows with NA's in the data
+Error in format(numMissing, scientific = F) : 
+  object 'numMissing' not found
+
+```
+
+ rows with NA's in the data
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+Yes
+Calculate weekday and weekend data
+
