@@ -1,6 +1,6 @@
 # Reproducible Research: Peer Assessment 1
 ========================================
-**Marcia Lazo**
+**Marcia Lazo**  
 ###Create directory if not present
 Set your working directory.
 Then create a subdirectory called data
