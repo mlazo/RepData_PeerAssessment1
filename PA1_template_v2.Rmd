@@ -76,11 +76,11 @@ Calculate the number of missing values in the data set
 I randomly filled in the missing values using values from the mean number of steps per interval
 ```{r, echo=TRUE}
 orig <- avg_per_interval$steps
-orig <- impute(orig, 'random')
+##orig <- impute(orig, 'random')
 
   
 ```
-There are `r format(numMissing, scientific = F)` rows with NA's in the data
+##There are `r format(numMissing, scientific = F)` rows with NA's in the data
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
